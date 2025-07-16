@@ -4,11 +4,22 @@
 <meta charset="UTF-8">
 <title>Line98</title>
 <style>
+   body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    flex-direction: column;
+    background-color: #f7f7f7;
+    font-family: Arial, sans-serif;
+  }
   #line98Board {
     display: grid;
     grid-template-columns: repeat(9, 40px);
     grid-template-rows: repeat(9, 40px);
     gap: 2px;
+    
   }
 
   .cell {
