@@ -141,39 +141,63 @@ function getColor(num) {
 
 
 function startCaro() {
-  const socket = io(); // kết nối websocket
+const socket = io();
+let player = '';
+let myTurn = false;
 
-  const boardEl = document.getElementById("caroBoard");
-  const size = 15;
+const boardDiv = document.getElementById('board');
+const statusDiv = document.getElementById('status');
 
-  // Tạo bàn cờ
-  const board = Array.from({ length: size }, () =>
-    Array.from({ length: size }, () => "")
-  );
+const board = Array.from({ length: 15 }, (_, r) => {
+  return Array.from({ length: 15 }, (_, c) => {
+    const div = document.createElement('div');
+    div.classList.add('cell');
+    div.dataset.row = r;
+    div.dataset.col = c;
+    div.addEventListener('click', () => {
+      if (!myTurn) return;
+      if (div.textContent !== '') return;
+      socket.emit('move', { row: r, col: c, player });
+    });
+    boardDiv.appendChild(div);
+    return div;
+  });
+});
 
-  boardEl.innerHTML = "";
-  for (let i = 0; i < size; i++) {
-    for (let j = 0; j < size; j++) {
-      const cell = document.createElement("div");
-      cell.classList.add("cell");
-      cell.dataset.row = i;
-      cell.dataset.col = j;
-      boardEl.appendChild(cell);
+socket.on('player', p => {
+  player = p;
+  myTurn = (p === 'X');
+  statusDiv.textContent = `You are ${p}. ${myTurn ? 'Your turn' : 'Wait'}`;
+});
 
-      cell.addEventListener("click", () => {
-        socket.emit("play", { x: i, y: j, player: "X" });
-      });
-    }
-  }
+socket.on('start', msg => {
+  statusDiv.textContent = msg;
+});
 
-  socket.on("board", (updatedBoard) => {
-    updatedBoard.forEach((row, i) => {
-      row.forEach((val, j) => {
-        const cell = boardEl.querySelector(
-          `.cell[data-row="${i}"][data-col="${j}"]`
-        );
-        cell.textContent = val;
-      });
+socket.on('board', ({ board: b, lastMove }) => {
+  board.forEach((row, r) => {
+    row.forEach((cell, c) => {
+      cell.textContent = b[r][c];
+      cell.classList.remove('X', 'O');
+      if (b[r][c] === 'X') cell.classList.add('X');
+      if (b[r][c] === 'O') cell.classList.add('O');
     });
   });
+  myTurn = (lastMove.player !== player);
+  statusDiv.textContent = myTurn ? 'Your turn' : 'Wait';
+});
+
+socket.on('win', msg => {
+  statusDiv.textContent = msg;
+  myTurn = false;
+});
+
+socket.on('reset', () => {
+  board.forEach(row => row.forEach(cell => {
+    cell.textContent = '';
+    cell.classList.remove('X', 'O');
+  }));
+  statusDiv.textContent = 'Game reset';
+});
+
 }
