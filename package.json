@@ -18,6 +18,7 @@
     "build": "nest build"
   },
   "devDependencies": {
+    "@nestjs/cli": "^11.0.7",
     "prisma": "^6.11.1"
   }
 }
