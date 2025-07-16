@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Caro Game</title>
+<style>
+  #caroBoard {
+    display: grid;
+    grid-template-columns: repeat(15, 30px);
+    gap: 2px;
+  }
+  .cell {
+    width: 30px;
+    height: 30px;
+    border: 1px solid #ccc;
+    text-align: center;
+    font-size: 20px;
+    line-height: 30px;
+    cursor: pointer;
+  }
+</style>
+</head>
+<body>
+<h2>Caro</h2>
+<div id="caroBoard"></div>
+
+<script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+<script src="app.js"></script>
+<script>
+startCaro();
+</script>
+</body>
+</html>
