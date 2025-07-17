@@ -1,0 +1,16 @@
+[
+  {
+    "username": "user1",
+    "password": "1",
+    "email": "trungdp2003@gmail.com",
+    "nickname": "trung",
+    "age": 99
+  },
+  {
+    "username": "user2",
+    "password": "1",
+    "email": "phantrung2706@gmail.com",
+    "nickname": "trung2",
+    "age": 99
+  }
+]

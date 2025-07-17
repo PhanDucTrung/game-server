@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { UsersModule } from './users/users.module';
-import { AuthModule } from './auth/auth.module';
 import { RoomModule } from './room/room.module';
 import { CaroModule } from './caro/caro.module';
 import { Line98Gateway } from './line98/line98.gateway';
@@ -16,7 +15,6 @@ import { CaroService } from './caro/caro.service';
       rootPath: join(__dirname, '..', 'frontend'),
     }),
     UsersModule,
-    AuthModule,
     RoomModule,
     CaroModule
   ],

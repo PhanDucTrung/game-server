@@ -11,7 +11,6 @@ const common_1 = require("@nestjs/common");
 const serve_static_1 = require("@nestjs/serve-static");
 const path_1 = require("path");
 const users_module_1 = require("./users/users.module");
-const auth_module_1 = require("./auth/auth.module");
 const room_module_1 = require("./room/room.module");
 const caro_module_1 = require("./caro/caro.module");
 const line98_gateway_1 = require("./line98/line98.gateway");
@@ -28,7 +27,6 @@ exports.AppModule = AppModule = __decorate([
                 rootPath: (0, path_1.join)(__dirname, '..', 'frontend'),
             }),
             users_module_1.UsersModule,
-            auth_module_1.AuthModule,
             room_module_1.RoomModule,
             caro_module_1.CaroModule
         ],

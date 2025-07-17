@@ -21,6 +21,7 @@ let AuthController = class AuthController {
     }
     login(body) {
         const valid = this.authService.validate(body.username, body.password);
+        console.log(valid);
         return valid ? { status: 'ok' } : { status: 'fail' };
     }
 };
