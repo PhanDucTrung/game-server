@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nghiên cứu NestJS</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: #f5f7fa;
+    color: #333;
+    margin: 0;
+    padding: 20px;
+  }
+
+  .container {
+    max-width: 800px;
+    margin: auto;
+    background: #fff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+
+  h1 {
+    color: #2c3e50;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  h2 {
+    color: #2980b9;
+    margin-top: 20px;
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  ul li {
+    background: #ecf0f1;
+    margin: 8px 0;
+    padding: 10px 15px;
+    border-radius: 4px;
+  }
+
+  .tag {
+    display: inline-block;
+    background: #3498db;
+    color: #fff;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    margin-right: 6px;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1> Bài 1: Nghiên cứu NestJS</h1>
+
+  <h2> Các thành phần cơ bản trong <span class="tag">NestJS</span></h2>
+  <ul>
+    <li><strong>Module:</strong> nơi tổ chức các thành phần theo tính năng, ví dụ <em>UserModule</em>.</li>
+    <li><strong>Controller:</strong> định nghĩa các endpoint HTTP (route) và nhận request từ client.</li>
+    <li><strong>Service:</strong> chứa business logic, thao tác dữ liệu.</li>
+    <li><strong>DTO:</strong> định nghĩa kiểu dữ liệu trao đổi (Data Transfer Object).</li>
+    <li><strong>Entity/Model:</strong> định nghĩa cấu trúc dữ liệu lưu trong database.</li>
+  </ul>
+
+  <h2> Các công nghệ chính sẵn có</h2>
+  <ul>
+    <li>Express/Fastify backend (NestJS build trên Express/Fastify).</li>
+    <li>Hỗ trợ sẵn TypeScript.</li>
+    <li>Tích hợp dễ dàng ORM (<em>TypeORM, Prisma, Mongoose…</em>).</li>
+    <li>Dependency Injection.</li>
+    <li>Middleware, Pipe, Guard, Interceptor.</li>
+    <li>Websocket (cho real-time).</li>
+    <li>Testing (Jest) sẵn.</li>
+  </ul>
+
+  <h2> Triển khai MVC</h2>
+  <ul>
+    <li><strong>Model:</strong> Entity/Schema + Database</li>
+    <li><strong>View:</strong> giao diện (có thể làm bằng <em>React/Angular/Vue</em> )</li>
+    <li><strong>Controller:</strong> định nghĩa route</li>
+    <li><strong>Service:</strong> xử lý nghiệp vụ</li>
+  </ul>
+</div>
+</body>
+</html>
