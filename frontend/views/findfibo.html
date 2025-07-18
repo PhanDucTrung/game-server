@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>tìm số Fibonaci</title>
+</head>
+<body>
+ nhấn F12 để xem thời gian tính
+</body>
+<script>
+  
+function fib(n) {
+  let a = 0n, b = 1n, temp;
+  for (let i = 2n; i <= n; i++) {
+    temp = a + b;
+    a = b;
+    b = temp;
+  }
+  return b;
+}
+
+console.time('fib');
+const result = fib(100n);
+console.timeEnd('fib');
+console.log("Fibonacci thứ 100 là:", result.toString());
+
+
+</script>
+</html>
