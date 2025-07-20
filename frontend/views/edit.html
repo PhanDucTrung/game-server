@@ -27,13 +27,13 @@
          mục lục 
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-           <a class="dropdown-item" href="/edit.html">tôi</a>
+           <a class="dropdown-item" href="edit.html">tôi</a>
            <div class="dropdown-divider"></div>
            <a class="dropdown-item" href="line98.html">line 98</a>
           <div class="dropdown-divider"></div>
-           <a class="dropdown-item" href="/caro.html">caro</a>
+           <a class="dropdown-item" href="caro.html">caro</a>
           <div class="dropdown-divider"></div>
-          <a class="dropdown-item" href="/index.html">Đăng xuất</a>
+          <a class="dropdown-item" href="index.html">Đăng xuất</a>
         </div>
       </li>
     </ul>
@@ -115,7 +115,7 @@ document.getElementById("update").addEventListener("submit", async (e) => {
     // Lưu user đã cập nhật vào localStorage
     localStorage.setItem("data", JSON.stringify(data.user));
     // Chuyển sang game.html
-    window.location.href = "/game.html";
+    window.location.href = "./game.html";
   } else {
     document.getElementById("errorMsg").innerText =
       "cập nhật thất bại";
