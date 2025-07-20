@@ -1,29 +1,15 @@
-import { OnGatewayConnection, OnGatewayDisconnect } from '@nestjs/websockets';
+import { OnGatewayInit } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
-import { RoomService } from 'src/services/room.service';
-type Game = {
-    id: string;
-    players: {
-        socket: Socket;
-        symbol: string;
-    }[];
-    board: string[][];
-    turn: string;
-    gameOver: boolean;
-};
-export declare class CaroGateway implements OnGatewayConnection, OnGatewayDisconnect {
-    private readonly roomService;
+import { CaroService } from '../services/caro.service';
+export declare class CaroGateway implements OnGatewayInit {
+    private readonly caroService;
     server: Server;
-    constructor(roomService: RoomService);
-    handleConnection(client: Socket): void;
+    constructor(caroService: CaroService);
+    afterInit(server: Server): void;
     handleJoin(client: Socket, roomId?: string): void;
-    handleDisconnect(client: Socket): void;
-    handleMove(client: Socket, data: {
+    handleMove(client: Socket, move: {
         row: number;
         col: number;
         gameId: string;
     }): void;
-    resetGame(game: Game): void;
-    checkWin(board: string[][], r: number, c: number, p: string): boolean;
 }
-export {};

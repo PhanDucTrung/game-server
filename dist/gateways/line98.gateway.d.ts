@@ -4,10 +4,12 @@ export declare class Line98Gateway {
     private readonly line98Service;
     server: Server;
     constructor(line98Service: Line98Service);
-    handleGetState(): void;
-    handleReset(): void;
+    getState(): void;
+    reset(): void;
     handleMoveBall(client: Socket, payload: {
         from: [number, number];
         to: [number, number];
     }): void;
+    handleGetHelp(client: Socket): void;
+    handlePostMove(): void;
 }

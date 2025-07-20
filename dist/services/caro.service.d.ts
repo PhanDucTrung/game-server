@@ -1,7 +1,13 @@
+import { Server, Socket } from 'socket.io';
+import { RoomService } from './room.service';
 export declare class CaroService {
-    private boards;
-    createBoard(roomId: string): string[][];
-    play(roomId: string, x: number, y: number, player: string): boolean;
-    checkWin(board: string[][], player: string): boolean;
-    getBoard(roomId: string): string[][] | undefined;
+    private readonly roomService;
+    server: Server;
+    constructor(roomService: RoomService);
+    handleJoin(client: Socket, roomId?: string): void;
+    handleMove(client: Socket, move: {
+        row: number;
+        col: number;
+        gameId: string;
+    }): void;
 }

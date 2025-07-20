@@ -1,33 +1,48 @@
 import { Injectable } from '@nestjs/common';
+import { Server, Socket } from 'socket.io';
+import { RoomService } from './room.service';
 
 @Injectable()
 export class CaroService {
-  private boards: Map<string, string[][]> = new Map();
+  server: Server;
 
-  createBoard(roomId: string): string[][] {
-    const board = Array.from({ length: 15 }, () => Array(15).fill(''));
-    this.boards.set(roomId, board);
-    return board;
-  }
+  constructor(private readonly roomService: RoomService) {}
 
-  play(roomId: string, x: number, y: number, player: string): boolean {
-    const board = this.boards.get(roomId);
-    if (!board) return false;
+  handleJoin(client: Socket, roomId?: string) {
+    const { newRoomId, symbol } = this.roomService.addPlayer(client.id, roomId);
 
-    if (board[x][y] === '') {
-      board[x][y] = player;
-      return true;
+    client.join(newRoomId);
+
+    client.emit('player', { symbol, roomId: newRoomId });
+
+    if (this.roomService.isReady(newRoomId)) {
+      this.server.to(newRoomId).emit('start', 'Game Start! X goes first.');
     }
 
-    return false;
+    this.server.emit('rooms', this.roomService.getAllRooms());
   }
 
-  checkWin(board: string[][], player: string): boolean {
-    // TODO: implement thuật toán check thắng
-    return false;
-  }
+  handleMove(
+    client: Socket,
+    move: { row: number; col: number; gameId: string },
+  ) {
+    const result = this.roomService.makeMove(
+      move.gameId,
+      client.id,
+      move.row,
+      move.col,
+    );
 
-  getBoard(roomId: string): string[][] | undefined {
-    return this.boards.get(roomId);
+    if (!result) return;
+
+    const { board, lastMove, winner } = result;
+
+    this.server.to(move.gameId).emit('board', { board, lastMove });
+
+    if (winner) {
+      this.server.to(move.gameId).emit('win', `${winner} wins!`);
+      this.roomService.resetRoom(move.gameId);
+    this.server.to(move.gameId).emit('reset');
+    }
   }
 }

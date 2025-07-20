@@ -8,15 +8,15 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CaroModule = void 0;
 const common_1 = require("@nestjs/common");
+const caro_service_1 = require("../services/caro.service");
 const caro_gateway_1 = require("../gateways/caro.gateway");
-const room_module_1 = require("./room.module");
+const room_service_1 = require("../services/room.service");
 let CaroModule = class CaroModule {
 };
 exports.CaroModule = CaroModule;
 exports.CaroModule = CaroModule = __decorate([
     (0, common_1.Module)({
-        imports: [room_module_1.RoomModule],
-        providers: [caro_gateway_1.CaroGateway],
+        providers: [caro_gateway_1.CaroGateway, caro_service_1.CaroService, room_service_1.RoomService],
     })
 ], CaroModule);
 //# sourceMappingURL=caro.module.js.map

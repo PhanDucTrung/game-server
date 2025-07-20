@@ -1,19 +1,20 @@
-import { Socket } from 'socket.io';
-export type Room = {
-    id: string;
-    players: {
-        socket: Socket;
-        symbol: string;
-    }[];
-    board: string[][];
-    turn: string;
-    gameOver: boolean;
-};
 export declare class RoomService {
     private rooms;
-    getRooms(): string[];
-    createRoom(): Room;
-    getRoom(id: string): Room | undefined;
-    addPlayerToRoom(room: Room, socket: Socket, symbol: string): void;
-    removePlayerFromRoom(socket: Socket): void;
+    addPlayer(socketId: string, roomId?: string): {
+        newRoomId: string;
+        symbol: string;
+    };
+    isReady(roomId: string): boolean;
+    getAllRooms(): string[];
+    makeMove(roomId: string, socketId: string, row: number, col: number): {
+        board: string[][];
+        lastMove: {
+            row: number;
+            col: number;
+            player: "X" | "O";
+        };
+        winner: "X" | "O";
+    };
+    checkWin(board: string[][], r: number, c: number, symbol: string): boolean;
+    resetRoom(roomId: string): void;
 }

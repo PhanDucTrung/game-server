@@ -4,80 +4,70 @@
 <meta charset="UTF-8">
 <title>Line98</title>
 <style>
-   body {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    margin: 0;
-    flex-direction: column;
-    background-color: #f7f7f7;
-    font-family: Arial, sans-serif;
-  }
-  #line98Board {
-    display: grid;
-    grid-template-columns: repeat(9, 40px);
-    grid-template-rows: repeat(9, 40px);
-    gap: 2px;
-    
-  }
-
-  .cell {
-    width: 40px;
-    height: 40px;
-    border: 1px solid #ccc;
-    background-color: #f9f9f9;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-
-  .ball {
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    margin: auto;
-    transition: transform 0.3s ease, opacity 0.5s ease;
-  }
-
-  .ball.appear {
-    transform: scale(0);
-    animation: pop 0.3s forwards;
-  }
-
-  @keyframes pop {
-    from { transform: scale(0); }
-    to { transform: scale(1); }
-  }
-
-  .ball.explode {
-    animation: explode 0.5s forwards;
-  }
-
-  @keyframes explode {
-    from { transform: scale(1); opacity: 1; }
-    to { transform: scale(1.5); opacity: 0; }
-  }
-
-  .ball.selected {
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+  flex-direction: column;
+  background-color: #f7f7f7;
+  font-family: Arial, sans-serif;
+}
+#line98Board {
+  display: grid;
+  grid-template-columns: repeat(9, 40px);
+  grid-template-rows: repeat(9, 40px);
+  gap: 2px;
+}
+.cell {
+  width: 40px;
+  height: 40px;
+  border: 1px solid #ccc;
+  background-color: #f9f9f9;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.ball {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  margin: auto;
+  transition: transform 0.3s ease, opacity 0.5s ease;
+}
+.ball.appear {
+  transform: scale(0);
+  animation: pop 0.3s forwards;
+}
+@keyframes pop {
+  from { transform: scale(0); }
+  to { transform: scale(1); }
+}
+.ball.explode {
+  animation: explode 0.8s forwards;
+}
+@keyframes explode {
+  from { transform: scale(2); opacity: 1; }
+  to { transform: scale(3); opacity: 0; }
+}
+.ball.selected {
   outline: 3px solid white;
   box-shadow: 0 0 10px white;
   animation: pulse 1s infinite;
 }
-
 @keyframes pulse {
-  0% {
-    transform: scale(1);
-    opacity: 1;
-  }
-  50% {
-    transform: scale(1.1);
-    opacity: 0.7;
-  }
-  100% {
-    transform: scale(1);
-    opacity: 1;
-  }
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.1); opacity: 0.7; }
+  100% { transform: scale(1); opacity: 1; }
+}
+.ball.highlight {
+  outline: 3px solid #ff0;
+  box-shadow: 0 0 15px #ff0;
+}
+
+.cell.highlight {
+  background-color: rgba(255, 255, 0, 0.3);
 }
 
 </style>
@@ -85,11 +75,188 @@
 <body>
 <h2>Line98</h2>
 <button id="resetBtn">Reset Game</button>
+<button id="helpBtn">Trợ giúp</button>
+
 <div id="line98Board"></div>
+
 <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
-<script src="/js/app.js"></script>
 <script>
 startLine98();
+
+function startLine98() {
+  const socket = io();
+
+  const boardEl = document.getElementById("line98Board");
+  const resetBtn = document.getElementById("resetBtn");
+
+
+    resetBtn.addEventListener("click",()=>{
+     socket.emit("reset");
+    });
+  let selected = null;
+  let prevBoard = Array.from({ length: 9 }, () => Array(9).fill(0));
+  let isAnimating = false;
+
+  socket.emit("getState");
+
+const helpBtn = document.getElementById("helpBtn");
+
+helpBtn.addEventListener("click", () => {
+  socket.emit("getHelp");
+});
+
+socket.on("helpSuggestion", (moves) => {
+  clearHighlights();
+
+  if (moves.length === 0) return;
+
+  moves.forEach(m => {
+    const [fx, fy] = m.from;
+    const [tx, ty] = m.to;
+
+    const fromCell = document.querySelector(`.cell[data-row="${fx}"][data-col="${fy}"] .ball`);
+    const toCell = document.querySelector(`.cell[data-row="${tx}"][data-col="${ty}"]`);
+
+    if (fromCell) fromCell.classList.add("highlight");
+    if (toCell) toCell.classList.add("highlight");
+  });
+});
+
+function clearHighlights() {
+  document.querySelectorAll(".highlight").forEach(el => el.classList.remove("highlight"));
+}
+
+
+
+
+
+  function renderBoard(state) {
+    if (boardEl.childElementCount === 0) {
+      for (let i = 0; i < 9; i++) {
+        for (let j = 0; j < 9; j++) {
+          const cell = document.createElement("div");
+          cell.classList.add("cell");
+          cell.dataset.row = i;
+          cell.dataset.col = j;
+          boardEl.appendChild(cell);
+        }
+      }
+    }
+
+    for (let i = 0; i < 9; i++) {
+      for (let j = 0; j < 9; j++) {
+        const cellEl = document.querySelector(`.cell[data-row="${i}"][data-col="${j}"]`);
+        const value = state.board[i][j];
+        cellEl.innerHTML = "";
+
+        if (value === 0) continue;
+
+        const ball = document.createElement("div");
+        ball.classList.add("ball", "appear");
+        ball.style.backgroundColor = getColor(Math.abs(value));
+        ball.style.width = value > 0 ? "30px" : "15px";
+        ball.style.height = value > 0 ? "30px" : "15px";
+        cellEl.appendChild(ball);
+      }
+    }
+
+    prevBoard = state.board.map(row => [...row]);
+  }
+
+function animateMove(from, path, onComplete) {
+  isAnimating = true;
+
+  const [fx, fy] = from;
+  const fromCell = document.querySelector(`.cell[data-row="${fx}"][data-col="${fy}"]`);
+  const ballEl = fromCell.querySelector(".ball");
+
+  if (!ballEl) {
+    isAnimating = false;
+    onComplete && onComplete();
+    return;
+  }
+
+  let step = 1;
+
+  function nextStep() {
+    if (step >= path.length) {
+      isAnimating = false;
+      onComplete && onComplete(); // renderBoard được gọi ở đây
+      return;
+    }
+
+    const [nx, ny] = path[step];
+    const nextCell = document.querySelector(`.cell[data-row="${nx}"][data-col="${ny}"]`);
+    nextCell.appendChild(ballEl);
+
+    step++;
+    setTimeout(nextStep, 100); // tốc độ animation
+  }
+
+  nextStep();
+}
+
+
+  socket.on("state", (state) => {
+    if (!isAnimating) {
+      renderBoard(state);
+    }
+  });
+
+socket.on("moveResult", (data) => {
+  animateMove(data.path[0], data.path, () => {
+    renderBoard(data); // hoặc renderBoard(data.board) nếu renderBoard chỉ cần board
+    clearHighlights();
+  });
+});
+
+
+ boardEl.addEventListener("click", (e) => {
+  const cell = e.target.closest(".cell");
+  if (!cell) return;
+
+  const row = parseInt(cell.dataset.row);
+  const col = parseInt(cell.dataset.col);
+  const value = prevBoard[row][col];
+
+  if (selected) {
+    // Nếu click lại đúng ô đang chọn → chỉ bỏ chọn
+    if (selected[0] === row && selected[1] === col) {
+      clearSelection();
+      selected = null;
+      return;
+    }
+
+    // Nếu click sang ô khác → gửi move
+    socket.emit("moveBall", { from: selected, to: [row, col] });
+    clearSelection();
+    selected = null;
+
+  } else if (value > 0) {
+    // Chưa chọn gì → chọn bóng này
+    clearSelection();
+    selected = [row, col];
+    const selectedCell = document.querySelector(
+      `.cell[data-row="${row}"][data-col="${col}"] .ball`
+    );
+    if (selectedCell) {
+      selectedCell.classList.add("selected");
+    }
+  }
+});
+
+
+  function clearSelection() {
+    document.querySelectorAll(".ball.selected").forEach(el => {
+      el.classList.remove("selected");
+    });
+  }
+
+  function getColor(num) {
+    const colors = ["red", "green", "blue", "yellow", "purple", "orange", "cyan"];
+    return colors[(num - 1) % colors.length];
+  }
+}
 </script>
 </body>
 </html>
